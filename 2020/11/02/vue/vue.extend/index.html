@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.libing.ml","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="什么是 extend ?extend是VUE的API用法：使用基础 Vue 构造器，创建一个“子类”。参数是一个包含组件选项的对象。data 选项是特例，需要注意 - 在 Vue.extend() 中它必须是函数 与 组件内data相同 &lt;div id&#x3D;&#39;app&#39;&gt;   &lt;span&gt;MyApp&lt;&#x2F;span&gt; &lt;&amp;#x2F">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue.extend 你学废了吗？">
+<meta property="og:url" content="http://blog.libing.ml/2020/11/02/vue/vue.extend/index.html">
+<meta property="og:site_name" content="Lee&#39;s Blog">
+<meta property="og:description" content="什么是 extend ?extend是VUE的API用法：使用基础 Vue 构造器，创建一个“子类”。参数是一个包含组件选项的对象。data 选项是特例，需要注意 - 在 Vue.extend() 中它必须是函数 与 组件内data相同 &lt;div id&#x3D;&#39;app&#39;&gt;   &lt;span&gt;MyApp&lt;&#x2F;span&gt; &lt;&amp;#x2F">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-02T02:24:16.000Z">
+<meta property="article:modified_time" content="2020-11-05T09:42:33.611Z">
+<meta property="article:author" content="Ice Lee">
+<meta property="article:tag" content="VUE">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://blog.libing.ml/2020/11/02/vue/vue.extend/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Vue.extend 你学废了吗？ | Lee's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Lee's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一个前端搬砖的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.libing.ml/2020/11/02/vue/vue.extend/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ice Lee">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lee's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Vue.extend 你学废了吗？
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-02 10:24:16" itemprop="dateCreated datePublished" datetime="2020-11-02T10:24:16+08:00">2020-11-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-05 17:42:33" itemprop="dateModified" datetime="2020-11-05T17:42:33+08:00">2020-11-05</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="什么是-extend"><a href="#什么是-extend" class="headerlink" title="什么是 extend ?"></a>什么是 <code>extend</code> ?</h3><p><code>extend</code>是VUE的API<br>用法：使用基础 <code>Vue</code> 构造器，创建一个“子类”。参数是一个包含组件选项的对象。<br><code>data</code> 选项是特例，需要注意 - 在 <code>Vue.extend()</code> 中它必须是函数 与 组件内<code>data</code>相同</p>
+<pre><code>&lt;div id&#x3D;&#39;app&#39;&gt;
+  &lt;span&gt;MyApp&lt;&#x2F;span&gt;
+&lt;&#x2F;div&gt;
+&lt;script&gt;
+  var Profile &#x3D; Vue.extend({
+    template: &#39;&lt;p&gt;目标：绑定到id为app的元素下面  打印data中的数据,&lt;&#x2F;p&gt;&#39;，
+    data: function(){
+      return {
+          p1:&#39;打印记录1&#39;,
+          p2:&#39;打印记录2&#39;
+        }
+      }
+  })
+  &#x2F;&#x2F; 进行绑定
+  new Profile().$mount(&#39;#mount-point&#39;);
+&lt;&#x2F;script&gt;</code></pre>
+
+
+<h3 id="为什么要使用-extend"><a href="#为什么要使用-extend" class="headerlink" title="为什么要使用 extend ?"></a>为什么要使用 <code>extend</code> ?</h3><p>比如系统要做个全局信息提示组件，这时候用<code>components</code>会很麻烦 需要单独的属性去控制显示隐藏会很累赘<br>这个时候就可以用到 <code>extend</code>  </p>
+<h3 id="一-构造一个自定义弹窗"><a href="#一-构造一个自定义弹窗" class="headerlink" title="一 构造一个自定义弹窗"></a>一 构造一个自定义弹窗</h3><pre><code>&lt;template&gt;
+   &lt;div v-if&#x3D;&quot;show&quot; ref&#x3D;&quot;modal&quot; class&#x3D;&quot;ek-modal_wrap&quot;&gt;
+     &lt;div class&#x3D;&quot;ek-modal-content&quot;&gt;
+       &lt;div class&#x3D;&quot;modal-title-wrap&quot;&gt;
+         &lt;div class&#x3D;&quot;modal-title&quot;&gt;Vue.extend 你学废了吗？&lt;&#x2F;div&gt;
+         &lt;slot name&#x3D;&quot;description&quot;&gt;&lt;&#x2F;slot&gt;
+       &lt;&#x2F;div&gt;
+       &lt;div class&#x3D;&quot;modal-button&quot;&gt;
+         &lt;a v-if&#x3D;&quot;confirmVisible&quot; class&#x3D;&quot;contral-btn confirm-btn&quot; href&#x3D;&quot;javascript:;&quot; @click&#x3D;&quot;confirm&quot;&gt;&lt;&#x2F;a&gt;
+         &lt;a v-if&#x3D;&quot;cancleVisible&quot; class&#x3D;&quot;contral-btn cancle-btn&quot; href&#x3D;&quot;javascript:;&quot; @click&#x3D;&quot;cancle&quot;&gt;&lt;&#x2F;a&gt;
+       &lt;&#x2F;div&gt;
+     &lt;&#x2F;div&gt;
+   &lt;&#x2F;div&gt;
+&lt;&#x2F;template&gt;
+
+&lt;script&gt;
+ export default {
+   data() {
+     return {
+       show: true,
+       title: &#39;&#39;, &#x2F;&#x2F; 标题
+       confirmText: &#39;确定&#39;, &#x2F;&#x2F; 确认文字
+       confirmVisible: true, &#x2F;&#x2F; 是否展示确认按钮
+       onConfirm: () &#x3D;&gt; { &#x2F;&#x2F; 确认执行函数
+         this.$emit(&#39;confirm&#39;)
+       }, 
+       cancleText: &#39;取消&#39;, &#x2F;&#x2F; 取消文字
+       cancleVisible: true, &#x2F;&#x2F; 是否展示取消按钮
+       onCancle: () &#x3D;&gt; { &#x2F;&#x2F; 取消执行函数
+         this.$emit(&#39;cancle&#39;)
+       } 
+     }
+   },
+   methods: {
+     confirm() {
+       this.onConfirm()
+       this.close()
+     },
+     cancle() {
+       this.onCancle()
+       this.close()
+     },
+     close() {
+       this.show&#x3D; false
+       if (this.$refs.modal) {
+         this.$refs.modal.remove() &#x2F;&#x2F; 关闭时候直接移除当前元素
+       }
+     }
+   }
+ }
+ &lt;&#x2F;script&gt;
+
+ </code></pre>
+
+<h3 id="二-将方法绑定在-Vue-原型上"><a href="#二-将方法绑定在-Vue-原型上" class="headerlink" title="二 将方法绑定在 Vue 原型上"></a>二 将方法绑定在 <code>Vue</code> 原型上</h3>  <pre><code>import Vue from &#39;vue&#39;
+import dialog from &#39;.&#x2F;components&#x2F;Dialog.vue&#39;
+function showDialog(options) {
+  const Dialog &#x3D; Vue.extend(dialog) &#x2F;&#x2F; 返回一个vue子类
+  &#x2F;&#x2F;创建实例并且挂载
+  const app &#x3D; new Dialog().$mount(document.createElement(&#39;div&#39;))
+  &#x2F;&#x2F;初始化参数
+  for (let key in options) {
+    app[key] &#x3D; options[key]
+  }
+  &#x2F;&#x2F;将元素插入body中
+  document.body.appendChild(app.$el)
+}
+Vue.prototype.$showDialog &#x3D; showDialog &#x2F;&#x2F;将方法放在原型上。
+  </code></pre>
+
+<h3 id="三-页面调用"><a href="#三-页面调用" class="headerlink" title="三 页面调用"></a>三 页面调用</h3>  <pre><code>...
+mounted() {
+  console.log(this.$showDialog)
+  this.$showDialog({
+    title: &#39;测试弹窗&#39;,
+    confirmText: &#39;希望弹出窗口正确调用&#39;,
+    cancelVisible: false
+  })
+}
+...
+  </code></pre>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/VUE/" rel="tag"># VUE</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/11/05/vue/jspdf/" rel="next" title="JSPDF + html2canvas + vue 导出PDF实现分页 页眉、页脚">
+      JSPDF + html2canvas + vue 导出PDF实现分页 页眉、页脚 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-extend"><span class="nav-number">1.</span> <span class="nav-text">什么是 extend ?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8-extend"><span class="nav-number">2.</span> <span class="nav-text">为什么要使用 extend ?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80-%E6%9E%84%E9%80%A0%E4%B8%80%E4%B8%AA%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BC%B9%E7%AA%97"><span class="nav-number">3.</span> <span class="nav-text">一 构造一个自定义弹窗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C-%E5%B0%86%E6%96%B9%E6%B3%95%E7%BB%91%E5%AE%9A%E5%9C%A8-Vue-%E5%8E%9F%E5%9E%8B%E4%B8%8A"><span class="nav-number">4.</span> <span class="nav-text">二 将方法绑定在 Vue 原型上</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89-%E9%A1%B5%E9%9D%A2%E8%B0%83%E7%94%A8"><span class="nav-number">5.</span> <span class="nav-text">三 页面调用</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ice Lee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ice Lee</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="//cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/three.min.js"></script>
+    <script defer src="//cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
